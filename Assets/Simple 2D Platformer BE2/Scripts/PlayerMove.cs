@@ -69,7 +69,7 @@ public class PlayerMove : MonoBehaviour
         if(rigid.velocity.y < 0)
         {
             // Debug.DrawRay(rigid.position, Vector3.down, new Color(0, 1, 0));
-            RaycastHit2D rayHit = Physics2D.Raycast(rigid.position, Vector3.down, 0.6f, LayerMask.GetMask("Platform"));
+            RaycastHit2D rayHit = Physics2D.Raycast(rigid.position, Vector3.down, 0.7f, LayerMask.GetMask("Platform"));
             if (rayHit.collider != null)
             {
                 anim.SetBool("isJumping", false);
