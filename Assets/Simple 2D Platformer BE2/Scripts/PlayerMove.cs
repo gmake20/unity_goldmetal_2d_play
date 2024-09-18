@@ -6,15 +6,17 @@ public class PlayerMove : MonoBehaviour
 {
     public float maxSpeed;
     public float jumpPower;
-    Rigidbody2D rigid;
+    public Rigidbody2D rigid;
     SpriteRenderer spriteRenderer;
     Animator anim;
+    CircleCollider2D coll;
 
     private void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
+        coll = GetComponent<CircleCollider2D>();
     }
 
     private void FixedUpdate()
@@ -73,7 +75,7 @@ public class PlayerMove : MonoBehaviour
             if (rayHit.collider != null)
             {
                 anim.SetBool("isJumping", false);
-                Debug.Log(rayHit.collider.name);
+                // Debug.Log(rayHit.collider.name);
             }
 
         }
@@ -100,6 +102,8 @@ public class PlayerMove : MonoBehaviour
 
     void OnAttack(Transform enemy)
     {
+        GameManager.Instance.stagePoint += 50;
+
         // Reaction Force
         rigid.AddForce(Vector2.up * 5, ForceMode2D.Impulse);
 
@@ -110,6 +114,9 @@ public class PlayerMove : MonoBehaviour
 
     void OnDamaged(Vector2 targetPos)
     {
+        // Player Health Down
+        GameManager.Instance.HealthDown();
+
         gameObject.layer = LayerMask.NameToLayer("PlayerDamaged");
 
         spriteRenderer.color = new Color(1, 1, 1, 0.4f);
@@ -122,9 +129,45 @@ public class PlayerMove : MonoBehaviour
         Invoke("OffDamaged", 3);
     }
 
-    void OffDamaged()
+    public void OffDamaged()
     {
         gameObject.layer = LayerMask.NameToLayer("Player");
         spriteRenderer.color = new Color(1, 1, 1, 1);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        Debug.Log(collision.gameObject.tag);
+        if (collision.gameObject.tag == "Item")
+        {
+            ItemCoin coin = collision.gameObject.GetComponent<ItemCoin>();
+            // Point
+            GameManager.Instance.stagePoint += coin.coin;
+
+            // Deactive Item
+            collision.gameObject.SetActive(false);
+        }
+        else if (collision.gameObject.tag == "Finish")
+        {
+            // Next Stage 
+            GameManager.Instance.NextStage();
+        }
+    }
+
+    public void OnDie()
+    {
+        spriteRenderer.color = new Color(1, 1, 1, 0.4f);
+
+        spriteRenderer.flipY = true;
+
+        coll.enabled = false;
+
+        rigid.AddForce(Vector2.up * 5, ForceMode2D.Impulse);
+    }
+
+    public void VelocityZero()
+    {
+        if(rigid)
+            rigid.velocity = Vector2.zero;
     }
 }
