@@ -11,12 +11,23 @@ public class PlayerMove : MonoBehaviour
     Animator anim;
     CircleCollider2D coll;
 
+    public AudioClip audioJump;
+    public AudioClip audioAttack;
+    public AudioClip audioDamaged;
+    public AudioClip audioItem;
+    public AudioClip audioDie;
+    public AudioClip audioFinish;
+
+    AudioSource audioSource;
+
+
     private void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
         coll = GetComponent<CircleCollider2D>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void FixedUpdate()
@@ -28,15 +39,42 @@ public class PlayerMove : MonoBehaviour
         if (rigid.velocity.x < -maxSpeed) rigid.velocity = new Vector2(-maxSpeed, rigid.velocity.y);
     }
 
+    void PlaySound(string action)
+    {
+        switch (action)
+        {
+            case "JUMP":
+                audioSource.clip = audioJump;
+                break;
+            case "ATTACK":
+                audioSource.clip = audioAttack;
+                break;
+            case "DAMAGED":
+                audioSource.clip = audioDamaged;
+                break;
+            case "ITEM":
+                audioSource.clip = audioItem;
+                break;
+            case "DIE":
+                audioSource.clip = audioDie;
+                break;
+            case "FINISH":
+                audioSource.clip = audioFinish;
+                break;
+        }
+        audioSource.Play();
+    }
+
     private void Update()
     {
         if (rigid.velocity.y < 0)
-            rigid.AddForce(Vector2.down * 5f);
+            rigid.AddForce(Vector2.down * 10f);
 
         if (Input.GetButtonDown("Jump") && !anim.GetBool("isJumping")) 
         {
             rigid.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
             anim.SetBool("isJumping", true);
+            PlaySound("JUMP");
         }
 
         // Stop Speed
@@ -110,7 +148,10 @@ public class PlayerMove : MonoBehaviour
         // Enemy Die
         EnemyMove enemyMove = enemy.GetComponent<EnemyMove>();
         enemyMove.OnDamaged();
-    } 
+
+        PlaySound("ATTACK");
+
+    }
 
     void OnDamaged(Vector2 targetPos)
     {
@@ -125,6 +166,9 @@ public class PlayerMove : MonoBehaviour
         rigid.AddForce(new Vector2(dirc,1) * 7 , ForceMode2D.Impulse);
 
         anim.SetTrigger("doDamaged");
+
+        PlaySound("DAMAGE");
+
 
         Invoke("OffDamaged", 3);
     }
@@ -146,11 +190,15 @@ public class PlayerMove : MonoBehaviour
 
             // Deactive Item
             collision.gameObject.SetActive(false);
+            PlaySound("ITEM");
+
         }
         else if (collision.gameObject.tag == "Finish")
         {
             // Next Stage 
             GameManager.Instance.NextStage();
+            PlaySound("FINISH");
+
         }
     }
 
@@ -163,6 +211,9 @@ public class PlayerMove : MonoBehaviour
         coll.enabled = false;
 
         rigid.AddForce(Vector2.up * 5, ForceMode2D.Impulse);
+
+        PlaySound("DIE");
+
     }
 
     public void VelocityZero()
