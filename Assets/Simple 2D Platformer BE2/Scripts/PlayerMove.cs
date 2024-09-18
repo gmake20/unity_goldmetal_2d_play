@@ -68,7 +68,7 @@ public class PlayerMove : MonoBehaviour
     private void Update()
     {
         if (rigid.velocity.y < 0)
-            rigid.AddForce(Vector2.down * 10f);
+            rigid.AddForce(Vector2.down * 20f);
 
         if (Input.GetButtonDown("Jump") && !anim.GetBool("isJumping")) 
         {
