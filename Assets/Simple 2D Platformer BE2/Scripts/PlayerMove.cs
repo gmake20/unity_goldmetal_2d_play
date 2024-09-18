@@ -45,7 +45,7 @@ public class PlayerMove : MonoBehaviour
         }
 
         // 방향전환
-        if (Input.GetButtonDown("Horizontal"))
+        if (Input.GetButton("Horizontal"))
             spriteRenderer.flipX = Input.GetAxisRaw("Horizontal") == -1;
 
         /*
@@ -86,10 +86,27 @@ public class PlayerMove : MonoBehaviour
         //Debug.Log(collision.gameObject.tag);
         if(collision.gameObject.tag == "Enemy")
         {
-            OnDamaged(collision.transform.position);
-            //Debug.Log("Player damaged!!");
+            if(rigid.velocity.y < 0 && transform.position.y > collision.transform.position.y)
+            {
+                OnAttack(collision.transform);
+            }
+            else
+            {
+                OnDamaged(collision.transform.position);
+                //Debug.Log("Player damaged!!");
+            }
         }
     }
+
+    void OnAttack(Transform enemy)
+    {
+        // Reaction Force
+        rigid.AddForce(Vector2.up * 5, ForceMode2D.Impulse);
+
+        // Enemy Die
+        EnemyMove enemyMove = enemy.GetComponent<EnemyMove>();
+        enemyMove.OnDamaged();
+    } 
 
     void OnDamaged(Vector2 targetPos)
     {

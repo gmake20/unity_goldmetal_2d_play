@@ -10,12 +10,14 @@ public class EnemyMove : MonoBehaviour
     public GameObject right;
     SpriteRenderer spriteRenderer;
     Animator anim;
+    CapsuleCollider2D coll;
 
     private void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
+        coll = GetComponent<CapsuleCollider2D>();
         // Think();
         Invoke("Think", 1);
 
@@ -58,5 +60,24 @@ public class EnemyMove : MonoBehaviour
 
         CancelInvoke();
         Invoke("Think", 5);
+    }
+
+    public void OnDamaged()
+    {
+        // sprite alpha
+        spriteRenderer.color = new Color(1, 1, 1, 0.4f);
+
+        spriteRenderer.flipY = true;
+
+        coll.enabled = false;
+
+        rigid.AddForce(Vector2.up * 5, ForceMode2D.Impulse);
+
+        Invoke("DeActive", 5);
+    }
+
+    void DeActive()
+    {
+        gameObject.SetActive(false);
     }
 }
