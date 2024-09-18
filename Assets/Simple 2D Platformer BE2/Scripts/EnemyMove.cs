@@ -16,7 +16,8 @@ public class EnemyMove : MonoBehaviour
         rigid = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
-        Think();
+        // Think();
+        Invoke("Think", 1);
 
     }
 

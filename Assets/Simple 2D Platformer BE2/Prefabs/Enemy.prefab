@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8642814520681787219}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: RightPos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -45,9 +45,9 @@ GameObject:
   - component: {fileID: 464962398068953335}
   - component: {fileID: 5382328514409136364}
   - component: {fileID: 4952885163974695256}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Enemy
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -228,7 +228,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1182740466648511036}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: LeftPos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
